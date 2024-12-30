@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/**
+ * ConfigKeyValue : 설정값
+ */
+model ConfigKeyValue {
+  key   String @id
+  value String
+}
+
+/**
+ * Account : 로그인을 위한 정보
+ */
+model Account {
+  uuid       String   @id @default(uuid())
+  password   String
+  provider   String
+  providerId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [uuid], references: [uuid])
+}
+
+/**
+ * User : 사용자 정보 (로그인 과 사용자 정보를 분리)
+ */
+model User {
+  uuid          String  @id @default(uuid())
+  email         String  @unique
+  name          String  @unique
+  bio           String?
+  walletAddress String? @unique
+
+  accounts Account[]
+
+  @@index([email], name: "email")
+  @@index([name], name: "name")
+  @@index([walletAddress], name: "walletAddress")
+}
+
+/**
+ * Notice : 공지사항
+ */
+model Notice {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  display   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
