@@ -12,4 +12,9 @@
   :root {
     --radius: 0.5rem;
   }
+
+  body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: none;
+  }
 }
